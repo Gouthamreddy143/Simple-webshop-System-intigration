@@ -1,0 +1,129 @@
+
+{% extends "base.html" %}
+
+{% block title %}Products | Group1 Store{% endblock %}
+
+{% block content %}
+
+<div class="products-page">
+
+    <div class="catalogue-heading">
+        <span class="welcome-tag">OUR COLLECTION</span>
+        <h1>Explore Our Products</h1>
+        <p>Discover quality products at great prices.</p>
+    </div>
+
+    {% if products %}
+
+    <div class="products-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <div class="product-image-container">
+
+                {% if product.image_filename %}
+
+                    <img
+                        src="{{ url_for('static', filename='images/products/' ~ product.image_filename) }}"
+                        alt="{{ product.name }}"
+                        class="product-image"
+                    >
+
+                {% else %}
+
+                    <div class="no-product-image">
+                        <span>No Image Available</span>
+                    </div>
+
+                {% endif %}
+
+                {% if not product.is_available %}
+
+                    <span class="stock-badge out-of-stock">
+                        OUT OF STOCK
+                    </span>
+
+                {% else %}
+
+                    <span class="stock-badge in-stock">
+                        IN STOCK
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+            <div class="product-card-content">
+
+                <h3>{{ product.name }}</h3>
+
+                <p class="product-description">
+                    {{ product.description }}
+                </p>
+
+                <div class="product-price">
+                    €{{ "%.2f"|format(product.price) }}
+                </div>
+
+                <div class="product-actions">
+
+                    <a
+                        href="{{ url_for('product_detail', product_id=product.id) }}"
+                        class="view-details-button"
+                    >
+                        View Details
+                    </a>
+
+                    {% if product.is_available %}
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('add_to_cart', product_id=product.id) }}"
+                            class="add-cart-form"
+                        >
+
+                            <button
+                                type="submit"
+                                class="add-cart-button"
+                            >
+                                Add to Cart
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <button
+                            type="button"
+                            class="add-cart-button out-of-stock-button"
+                            disabled
+                        >
+                            Out of Stock
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <div class="empty-products">
+            <h3>No Products Available</h3>
+            <p>Our products will be available soon.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

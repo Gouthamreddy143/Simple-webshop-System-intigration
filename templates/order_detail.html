@@ -1,0 +1,149 @@
+
+{% extends "base.html" %}
+
+{% block title %}Order Details | Group1 Store{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h2>Order Details</h2>
+        <p class="text-muted">
+            Order #{{ order.id }}
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- ORDER INFORMATION -->
+
+        <div class="col-lg-6">
+
+            <div class="admin-container h-100">
+
+                <h4 class="mb-4">Order Information</h4>
+
+                <div class="mb-3">
+                    <strong>Order ID:</strong>
+                    <span>#{{ order.id }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Order Date:</strong>
+                    <span>{{ order.created_at }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Order Total:</strong>
+                    <span class="fw-bold">
+                        €{{ "%.2f"|format(order.total) }}
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Payment Method:</strong>
+                    <span>{{ order.payment_method }}</span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Payment Status:</strong>
+
+                    {% if order.payment_status == "Paid" %}
+                        <span class="badge bg-success">
+                            Paid
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">
+                            Pending Payment
+                        </span>
+                    {% endif %}
+
+                </div>
+
+                <div class="mb-3">
+                    <strong>Order Status:</strong>
+
+                    {% if order.status == "completed" %}
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+                    {% elif order.status == "shipped" %}
+                        <span class="badge bg-info text-dark">
+                            Shipped
+                        </span>
+                    {% else %}
+                        <span class="badge bg-secondary">
+                            Pending
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ORDER ITEMS -->
+
+        <div class="col-lg-6">
+
+            <div class="admin-container h-100">
+
+                <h4 class="mb-4">Purchased Products</h4>
+
+                {% for item in items %}
+
+                <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+
+                    <div>
+                        <h6 class="mb-1">
+                            {{ item.product_name }}
+                        </h6>
+
+                        <small class="text-muted">
+                            Quantity: {{ item.quantity }}
+                        </small>
+                    </div>
+
+                    <strong>
+                        €{{ "%.2f"|format(
+                            item.unit_price * item.quantity
+                        ) }}
+                    </strong>
+
+                </div>
+
+                {% endfor %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <h5>Grand Total</h5>
+
+                    <h5 class="text-primary">
+                        €{{ "%.2f"|format(order.total) }}
+                    </h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        <a href="{{ url_for('orders') }}"
+           class="btn btn-outline-primary">
+            Back to My Orders
+        </a>
+
+        <a href="{{ url_for('products') }}"
+           class="btn btn-primary">
+            Continue Shopping
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

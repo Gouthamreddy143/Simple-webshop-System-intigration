@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Group1 Store{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- ANIMATED BACKGROUND BUBBLES -->
+    <div class="background-bubbles" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+
+    <!-- HEADER -->
+    <header class="main-header">
+
+        <div class="header-container">
+
+            <!-- BRAND LOGO -->
+            <a href="{{ url_for('index') }}" class="brand-logo">
+                <span class="brand-icon">
+                    <i class="bi bi-shop"></i>
+                </span>
+
+                <span>
+                    Group1 <strong>Store</strong>
+                </span>
+            </a>
+
+
+            <!-- MOBILE MENU BUTTON -->
+            <button
+                class="mobile-menu-toggle"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavigation"
+                aria-controls="mainNavigation"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <i class="bi bi-list"></i>
+            </button>
+
+
+            <!-- NAVIGATION -->
+            <nav class="main-navigation collapse" id="mainNavigation">
+
+                <a href="{{ url_for('index') }}" class="nav-button nav-home">
+                    <i class="bi bi-house-door-fill"></i>
+                    <span>Home</span>
+                </a>
+
+                <a href="{{ url_for('products') }}" class="nav-button nav-products">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Products</span>
+                </a>
+
+                <a href="{{ url_for('cart') }}" class="nav-button nav-cart">
+                    <i class="bi bi-cart3"></i>
+                    <span>Cart</span>
+
+                    <span class="cart-count">{{ cart_count }}</span>
+                </a>
+
+
+                {% if logged_in_customer %}
+
+                    <a href="{{ url_for('orders') }}" class="nav-button nav-orders">
+                        <i class="bi bi-box-seam-fill"></i>
+                        <span>My Orders</span>
+                    </a>
+
+                    <a href="{{ url_for('profile') }}" class="nav-button nav-profile">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profile</span>
+                    </a>
+
+                    <a href="{{ url_for('logout') }}" class="nav-button logout-button">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('login') }}" class="nav-button nav-login">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+                    </a>
+
+                    <a href="{{ url_for('register') }}" class="nav-button register-button">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>Register</span>
+                    </a>
+
+                {% endif %}
+
+
+                <!-- ADMIN NAVIGATION -->
+                {% if admin_logged_in %}
+
+                    <a href="{{ url_for('admin_products') }}" class="nav-button nav-admin-products">
+                        <i class="bi bi-gear-fill"></i>
+                        <span>Manage Products</span>
+                    </a>
+
+                    <a href="{{ url_for('admin_orders') }}" class="nav-button nav-admin-orders">
+                        <i class="bi bi-receipt"></i>
+                        <span>Manage Orders</span>
+                    </a>
+
+                    <a href="{{ url_for('admin_logout') }}" class="nav-button logout-button">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>Admin Logout</span>
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('admin_login') }}" class="nav-button admin-button">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>Admin</span>
+                    </a>
+
+                {% endif %}
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-container">
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                <div class="flash-container">
+
+                    {% for category, message in messages %}
+
+                        <div class="alert alert-{{ category }} alert-dismissible fade show custom-alert" role="alert">
+
+                            <i class="bi bi-info-circle-fill me-2"></i>
+
+                            {{ message }}
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"
+                            ></button>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content">
+
+            {% block content %}{% endblock %}
+
+        </div>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+
+        <div class="footer-container">
+
+            <div class="footer-brand">
+                <h5>
+                    <i class="bi bi-shop"></i>
+                    Group1 Store
+                </h5>
+
+                <p>Your one-stop online shopping destination.</p>
+            </div>
+
+            <div class="footer-info">
+                <p>
+                    <i class="bi bi-heart-fill"></i>
+                    Made for a better shopping experience
+                </p>
+
+                <p>© 2026 Group1 Store. All rights reserved.</p>
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- BOOTSTRAP JAVASCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- COLOURFUL CLICK BUBBLE EFFECT -->
+    <script>
+    document.addEventListener("click", function (event) {
+
+        // Do not create bubbles when clicking inside a text input.
+        if (
+            event.target.closest("input, textarea, select") ||
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+            return;
+        }
+
+        const colors = [
+            "#ff1744",
+            "#ff9100",
+            "#ffea00",
+            "#00e676",
+            "#00b0ff",
+            "#651fff",
+            "#f50057",
+            "#00e5ff",
+            "#d500f9",
+            "#76ff03"
+        ];
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        const bubble = document.createElement("span");
+
+        bubble.className = "ripple";
+
+        bubble.style.left = event.clientX + "px";
+        bubble.style.top = event.clientY + "px";
+        bubble.style.color = color;
+        bubble.style.borderColor = color;
+
+        document.body.appendChild(bubble);
+
+        setTimeout(function () {
+            bubble.remove();
+        }, 850);
+
+    });
+    </script>
+
+
+    <!-- PAGE-SPECIFIC JAVASCRIPT -->
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

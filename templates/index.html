@@ -1,0 +1,90 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home | Group1 Store{% endblock %}
+
+{% block content %}
+
+<section class="welcome-section">
+
+    <div class="welcome-background-circle circle-one"></div>
+    <div class="welcome-background-circle circle-two"></div>
+
+    <div class="welcome-content">
+
+        <div class="welcome-tag">
+            <span class="welcome-tag-dot"></span>
+            WELCOME TO GROUP1 STORE
+        </div>
+
+        <h1>
+            Shopping Made
+            <span>Simple & Smart.</span>
+        </h1>
+
+        <p>
+            Discover amazing products, explore our collection
+            and enjoy a simple, convenient and reliable
+            online shopping experience.
+        </p>
+
+        <div class="welcome-actions">
+            <a href="{{ url_for('products') }}" class="explore-button">
+                Explore Products
+                <span class="explore-arrow">→</span>
+            </a>
+        </div>
+
+        <div class="welcome-features">
+            <div class="welcome-feature">
+                <span class="feature-icon">✓</span>
+                Easy Shopping
+            </div>
+            <div class="welcome-feature">
+                <span class="feature-icon">✓</span>
+                Quality Products
+            </div>
+            <div class="welcome-feature">
+                <span class="feature-icon">✓</span>
+                Simple Checkout
+            </div>
+        </div>
+
+    </div>
+
+    <div class="welcome-visual">
+
+        <div class="visual-glow"></div>
+
+        <div class="shopping-visual-card">
+            <div class="visual-top-label">
+                <span class="visual-live-dot"></span>
+                YOUR SHOPPING DESTINATION
+            </div>
+
+            <div class="visual-bag">
+                <div class="bag-handle"></div>
+                <div class="bag-body">
+                    <span class="bag-logo">G1</span>
+                </div>
+            </div>
+
+            <div class="visual-card-caption">
+                <span>DISCOVER MORE</span>
+                <strong>Find what you love.</strong>
+            </div>
+        </div>
+
+        <div class="floating-badge badge-top">
+            <span>✦</span> Smart Shopping
+        </div>
+
+        <div class="floating-badge badge-bottom">
+            <span>♡</span> Made for You
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

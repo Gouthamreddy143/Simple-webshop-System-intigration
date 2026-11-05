@@ -1,0 +1,347 @@
+
+{% extends "base.html" %}
+
+{% block title %}Admin - Manage Products | Group1 Store{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="admin-heading mb-4">
+        <h2>Product Management</h2>
+        <p>Add products, manage availability and remove products from your store.</p>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div class="admin-container mb-4">
+
+        <h4 class="mb-4">Add New Product</h4>
+
+        <form
+            method="POST"
+            action="{{ url_for('admin_products') }}"
+            enctype="multipart/form-data"
+        >
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Product Name</label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        class="form-control"
+                        placeholder="Enter product name"
+                        required
+                    >
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Product Price (€)</label>
+
+                    <input
+                        type="number"
+                        name="price"
+                        class="form-control"
+                        placeholder="Enter price"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Product Description</label>
+
+                <textarea
+                    name="description"
+                    class="form-control"
+                    rows="3"
+                    placeholder="Enter product description"
+                    required
+                ></textarea>
+            </div>
+
+            <!-- IMAGE UPLOAD -->
+            <div class="mb-3">
+                <label class="form-label">Upload Product Image</label>
+
+                <input
+                    type="file"
+                    name="image"
+                    id="productImage"
+                    class="form-control"
+                    accept=".jpg,.jpeg,.png,.webp"
+                    required
+                >
+
+                <small class="text-muted">
+                    JPG, JPEG, PNG or WEBP. Maximum 5 MB.
+                </small>
+            </div>
+
+            <!-- IMAGE PREVIEW -->
+            <div class="image-preview-container mb-3">
+
+                <img
+                    id="imagePreview"
+                    src=""
+                    alt="Product preview"
+                    style="
+                        display:none;
+                        max-width:180px;
+                        max-height:180px;
+                        object-fit:contain;
+                    "
+                >
+
+                <p id="previewMessage" class="text-muted">
+                    Your image preview will appear here.
+                </p>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                + Add Product
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- EXISTING PRODUCTS -->
+    <div class="admin-container">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+
+            <h4 class="mb-0">Existing Products</h4>
+
+            <span class="badge bg-dark">
+                {{ products|length }} Products
+            </span>
+
+        </div>
+
+        {% if products %}
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock Status</th>
+                        <th>Availability</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for product in products %}
+
+                    <tr>
+
+                        <td>{{ product.id }}</td>
+
+                        <td>
+                            {% if product.image_filename %}
+
+                                <img
+                                    src="{{ url_for('static', filename='images/products/' ~ product.image_filename) }}"
+                                    alt="{{ product.name }}"
+                                    class="admin-product-image"
+                                    style="
+                                        width:65px;
+                                        height:65px;
+                                        object-fit:contain;
+                                    "
+                                >
+
+                            {% else %}
+
+                                <span class="text-muted">
+                                    No image
+                                </span>
+
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <strong>{{ product.name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ product.description }}
+                        </td>
+
+                        <td>
+                            €{{ "%.2f"|format(product.price) }}
+                        </td>
+
+                        <td>
+
+                            {% if product.is_available %}
+
+                                <span class="badge bg-success">
+                                    In Stock
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    Out of Stock
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('toggle_product_stock', product_id=product.id) }}"
+                                onsubmit="return confirm('Change stock availability for this product?');"
+                            >
+
+                                {% if product.is_available %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-warning btn-sm"
+                                    >
+                                        Mark Out of Stock
+                                    </button>
+
+                                {% else %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success btn-sm"
+                                    >
+                                        Mark In Stock
+                                    </button>
+
+                                {% endif %}
+
+                            </form>
+
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('delete_product', product_id=product.id) }}"
+                                onsubmit="return confirm('Delete this product permanently?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger btn-sm"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+            <p class="text-muted">
+                No products have been added yet.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- IMAGE PREVIEW SCRIPT -->
+<script>
+
+const imageInput = document.getElementById("productImage");
+const imagePreview = document.getElementById("imagePreview");
+const previewMessage = document.getElementById("previewMessage");
+
+imageInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    imagePreview.style.display = "none";
+
+    if (!file) {
+        previewMessage.style.display = "block";
+        return;
+    }
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+
+        alert("Please upload a JPG, JPEG, PNG or WEBP image.");
+
+        this.value = "";
+
+        previewMessage.style.display = "block";
+
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+
+        alert("Image must be smaller than 5 MB.");
+
+        this.value = "";
+
+        previewMessage.style.display = "block";
+
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        imagePreview.src = event.target.result;
+
+        imagePreview.style.display = "block";
+
+        previewMessage.style.display = "none";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+</script>
+
+{% endblock %}
